@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: rickmorty-app
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: rickmorty-app
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: rickmorty-app
-        image: rickmorty-app:latest
+        image: yishaigalili/rickmorty-app:latest
         ports:
         - containerPort: 5000
         livenessProbe:

@@ -1,15 +1,13 @@
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "rickmorty.fullname" . }}
-  labels:
-    {{- include "rickmorty.labels" . | nindent 4 }}
+  name: {{ .Chart.Name }}-service
 spec:
-  type: {{ .Values.service.type }}
-  ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
   selector:
-    {{- include "rickmorty.selectorLabels" . | nindent 4 }}
+    app: {{ .Chart.Name }}
+  ports:
+  - port: {{ .Values.service.port }}
+    targetPort: {{ .Values.service.targetPort }}
+    nodePort: {{ .Values.service.nodePort }}
+  type: {{ .Values.service.type }}
