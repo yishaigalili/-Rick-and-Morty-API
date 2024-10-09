@@ -1,25 +1,11 @@
 import requests
 import csv
 from flask import Flask, jsonify
-import logging
-from typing import List, Dict, Any
+from typing import List, Dict
 
 app = Flask(__name__)
 
-class Character:
-    def __init__(self, name: str, location: str, image: str):
-        self.name = name
-        self.location = location
-        self.image = image
-
-    def to_dict(self) -> Dict[str, str]:
-        return {
-            "name": self.name,
-            "location": self.location,
-            "image": self.image
-        }
-
-def get_characters() -> List[Character]:
+def get_characters() -> List[Dict[str, str]]:
     characters = []
     page = 1
     while True:
@@ -33,11 +19,11 @@ def get_characters() -> List[Character]:
                 char['status'] == 'Alive' and 
                 char['origin']['name'] == 'Earth (C-137)'):
                 
-                character = Character(
-                    name=char['name'],
-                    location=char['location']['name'],
-                    image=char['image']
-                )
+                character = {
+                    "name": char['name'],
+                    "location": char['location']['name'],
+                    "image": char['image']
+                }
                 characters.append(character)
         
         if data['info']['next'] is None:
@@ -46,7 +32,7 @@ def get_characters() -> List[Character]:
     
     return characters
 
-def write_to_csv(characters: List[Character], filename: str = 'characters.csv'):
+def write_to_csv(characters: List[Dict[str, str]], filename: str = 'characters.csv'):
     with open(filename, 'w', newline='') as csvfile:
         fieldnames = ['Name', 'Location', 'Image']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -54,15 +40,15 @@ def write_to_csv(characters: List[Character], filename: str = 'characters.csv'):
         writer.writeheader()
         for char in characters:
             writer.writerow({
-                'Name': char.name,
-                'Location': char.location,
-                'Image': char.image
+                'Name': char['name'],
+                'Location': char['location'],
+                'Image': char['image']
             })
 
-@app.route('/characters', methods=['GET'])
+@app.route('/', methods=['GET'])
 def get_characters_endpoint():
     characters = get_characters()
-    return jsonify([char.to_dict() for char in characters])
+    return jsonify(characters)
 
 @app.route('/healthcheck', methods=['GET'])
 def healthcheck():
