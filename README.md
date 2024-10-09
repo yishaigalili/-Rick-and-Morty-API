@@ -62,7 +62,7 @@ helm install rickmorty helm/rickmorty
 
 ## API Endpoints
 
-- GET `/characters` - Returns the list of characters
+- GET `/` - Returns the list of characters
 - GET `/healthcheck` - Returns the health status of the application
 
 ## CSV Output
